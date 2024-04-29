@@ -63,7 +63,7 @@ Graph *createGraph();
 void addAirport(Graph *graph);
 void addFlight(Graph *graph);
 void displayRoutes(Graph *graph);
-void findFastestFlight(Graph *graph, const char *source, const char *destination);
+void findFastestFlight(Graph *graph);
 void dijkstra(Graph *graph, const char *source, const char *destination);
 int isAlphaNumeric(const char *str);
 int timeToMinutes(Time time);
@@ -71,48 +71,40 @@ int timeToMinutes(Time time);
 void MaddAirport(Graph *graph, Airport airport);
 void MaddFlight(Graph *graph, Flight flight);
 
-void findFastestFlight(Graph *graph, const char *source, const char *destination)
+void findFastestFlight(Graph *graph)
 {
-    int minDuration = CUSTOM_INT_MAX; // Initialize minimum duration to a very large value
-    Flight fastestFlight;             // Keep track of the fastest flight
+    char source[4];
+    char destination[4];
+    printf("Enter source airport code (3 characters): ");
+    scanf("%3s", source);
+    printf("Enter destination airport code (3 characters): ");
+    scanf("%3s", destination);
 
-    for (int i = 0; i < graph->numFlights; ++i)
+    // Find the index of the source and destination airports
+    int sourceIndex = -1, destIndex = -1;
+    for (int i = 0; i < graph->numAirports; ++i)
     {
-        Flight flight = graph->flights[i];
-        if (strcmp(flight.departureAirport.code, source) == 0 &&
-            strcmp(flight.arrivalAirport.code, destination) == 0)
+        if (strcmp(graph->airports[i].code, source) == 0)
         {
-            // Calculate duration of the flight
-            int departureMinutes = timeToMinutes(flight.departureTime);
-            int arrivalMinutes = timeToMinutes(flight.arrivalTime);
-            int duration = arrivalMinutes - departureMinutes;
-            if (duration < 0)
-            {
-                // Flight arrives the next day, adjust duration
-                duration += 24 * 60;
-            }
-
-            // Update minimum duration and fastest flight if needed
-            if (duration < minDuration)
-            {
-                minDuration = duration;
-                fastestFlight = flight;
-            }
+            sourceIndex = i;
+        }
+        if (strcmp(graph->airports[i].code, destination) == 0)
+        {
+            destIndex = i;
+        }
+        if (sourceIndex != -1 && destIndex != -1)
+        {
+            break;
         }
     }
 
-    // Check if a fastest flight was found
-    if (minDuration != CUSTOM_INT_MAX)
+    if (sourceIndex == -1 || destIndex == -1)
     {
-        printf("Fastest flight from %s to %s:\n", source, destination);
-        printf("%s: Departure %02d:%02d, Arrival %02d:%02d, Duration %d minutes, Cost $%d\n",
-               fastestFlight.flightNumber, fastestFlight.departureTime.hours, fastestFlight.departureTime.minutes,
-               fastestFlight.arrivalTime.hours, fastestFlight.arrivalTime.minutes, minDuration, fastestFlight.cost);
+        printf("Source or destination airport not found.\n");
+        return;
     }
-    else
-    {
-        printf("No flights found from %s to %s.\n", source, destination);
-    }
+
+    dijkstra(graph, graph->airports[sourceIndex].code, graph->airports[destIndex].code);
 }
 
 void searchFlights(Graph *graph, const char *departure, const char *arrival)
@@ -129,7 +121,6 @@ void searchFlights(Graph *graph, const char *departure, const char *arrival)
                    flight.flightNumber, flight.departureTime.hours, flight.departureTime.minutes,
                    flight.arrivalTime.hours, flight.arrivalTime.minutes, flight.cost);
             found = true;
-            break; // Add break statement after finding the flights
         }
     }
     if (!found)
@@ -311,13 +302,7 @@ int main()
         break;
         case 7:
         {
-            char source[4];
-            char destination[4];
-            printf("Enter source airport code (3 characters): ");
-            scanf("%3s", source);
-            printf("Enter destination airport code (3 characters): ");
-            scanf("%3s", destination);
-            findFastestFlight(graph, source, destination);
+            findFastestFlight(graph);
         }
         break;
         case 8:
