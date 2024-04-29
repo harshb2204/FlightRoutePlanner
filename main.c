@@ -222,6 +222,12 @@ void MaddFlight(Graph *graph, Flight flight)
 
 int main()
 {
+
+    printf("*********************************************\n");
+    printf("*          FLIGHT ROUTE PLANNER             *\n");
+    printf("*        SY CS-A BATCH 2 GROUP 11           *\n");
+    printf("*******************************************\n\n");
+    printf("Welcome to the Flight Route Planner!\n");
     Graph *graph = createGraph();
     Airport airport1 = {"ABC", "Airport 1"};
     Airport airport2 = {"DEF", "Airport 2"};
@@ -249,17 +255,21 @@ int main()
     int choice;
     do
     {
-        printf("\nFlight Route Planner Menu:\n");
+        printf("\n---------------------\n");
+        printf("Flight Route Planner Menu:\n");
+        printf("---------------------\n");
         printf("1. Add Airport\n");
         printf("2. Add Flight\n");
         printf("3. Display Routes\n");
         printf("4. Remove Flight\n");
         printf("5. Search Flight\n");
-        printf("6. Display Airport Schedule\n"); // New option for displaying airport schedule
-        printf("7. Fastest Flight\n");
+        printf("6. Display Airport Schedule\n");
+        printf("7. Find Fastest Flight\n");
         printf("8. Find Connecting Flight\n");
         printf("9. Exit\n");
+        printf("---------------------\n");
         printf("Enter your choice: ");
+
         scanf("%d", &choice);
 
         switch (choice)
